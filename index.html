@@ -46,7 +46,7 @@
       var map;
       var service;
       var markers = [];
-
+      var infowindow = null;
       let resultDisplay = document.querySelector(".result-list");
       resultDisplay.innerHTML=" ";
 
@@ -61,31 +61,37 @@
       function clearMap(){   
           //3. clear any previous markers from the map
           console.log("map cleared!...loading...")
-          setMapOnAll(null);
-          markers = [];
-          //clear html too
+          setMapOnAll(null); //seperates/hides markers from the map, does not "remove them"
+          markers = []; // clearing the array removes the markers from the array, deleting them 
+          //usr story: clear html too
+      }
+      //only responsible for setting up info inside infoWindow
+      function setupInfowindow(rName, rVicinity){
+        var content = "<div><p>" + rName + "</p><p>" + rVicinity + "</p></div>";
+        return content;
       }
 
-      function createMarker(rLat,rLng){ 
+      //creates a maker and info window per array object
+      function createMarker(rLat,rLng, rName, rVicinity){ 
         console.log("creating marker")
-        //1.plot each result on the map with the name and location in the infowindow
-        //2. show the result in the UL on the right screen
+       //store passed thru parameters in new variables
         var newMarker = {lat: rLat, lng: rLng};
+         //pass through again to function that handles setting up content 
+        var content= setupInfowindow(rName, rVicinity);
           var marker = new google.maps.Marker({
             position: newMarker, 
             map: map
           }); console.log("adding to array");
           markers.push(marker);
+          //when click on marker, show and set content on map 
+          marker.addListener("click", function(){
+            console.log("clicky click")
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+          })
       } 
 
-      // function createInfoWindow(rName, rVicinity){
-        
-      //   var content = {name:rName, location: rVicinity};
-      //   var infowindow= new google.maps.InfoWindow({
-      //     content: content
-
-      //   });
-      // }
+ 
       
     
       function showResultsOnMap(results, status){
@@ -100,10 +106,10 @@
             var rLng = results[i].geometry.location.lng();
             var rName = results[i].name;
             var rVicinity= results[i].vicinity;
-            var newMarker = {lat: rLat, lng: rLng};
+            // var newMarker = {lat: rLat, lng: rLng};
             console.log("position is", rLat, rLng);
-            createMarker(rLat,rLng);
-            createInfoWindow(rName,rVicinity);
+            createMarker(rLat,rLng, rName, rVicinity);
+            //createInfoWindow(rName,rVicinity);
           }
         }else{console.log("something went wrong!", status)}
       }
@@ -137,7 +143,7 @@
        //makes places API a variable 
         service = new google.maps.places.PlacesService(map);
         var content ="something about this marker"
-        var infowindow= new google.maps.InfoWindow({
+        infowindow= new google.maps.InfoWindow({
           content: content
 
         });
@@ -152,11 +158,11 @@
             infowindow.open(map, marker);
         }
         
-        marker.addListener("click", function (){
-          //content is passed through the function 
-          showContentInWindow("this is new content");
-          console.log("clicky");
-        });
+        // marker.addListener("click", function (){
+        //   //content is passed through the function 
+        //   showContentInWindow("this is new content");
+        //   console.log("clicky");
+        // });
 
 
     

@@ -30,57 +30,82 @@
     </style>
   </head>
   <body>
-        <div class="wrapper">
+    <div class="wrapper">
+      <div id="map"></div>
+      <div id="results">
+        <form>
+          <input type="text" name="query"/>
+          <input type="submit" value="Search"/>
+        </form>
+        <ul class="result-list">
 
-                <div id="map"></div>
-    
-                <div id="results">
-    
-                    <form>
-                        <input type="text" name="query"/>
-                        <input type="submit" value="Search"/>
-                    </form>
-                    <ul>
-    
-                    </ul>
-              </div>
-    
-            </div>
+        </ul>
+      </div>
+    </div>
     <script>
       var map;
       var service;
+      var markers = [];
+
+      let resultDisplay = document.querySelector(".result-list");
+      resultDisplay.innerHTML=" ";
+
+      function setMapOnAll(map) {
+        //adds to map
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+        //adds to display
+      }
 
       function clearMap(){   
           //3. clear any previous markers from the map
           console.log("map cleared!...loading...")
-          //marker.setMap(null)
+          setMapOnAll(null);
+          markers = [];
+          //clear html too
       }
 
-      function createMarker(returns){ 
+      function createMarker(rLat,rLng){ 
         console.log("creating marker")
-          //1.plot each result on the map with the name and location in the infowindow
-          //2. show the result in the UL on the right screen
-        //marker uses parameters and must include map: map to load the mapAPI 
-       
-       // var marker = new google.maps.Marker({position: positionX, map: map});
-       } 
+        //1.plot each result on the map with the name and location in the infowindow
+        //2. show the result in the UL on the right screen
+        var newMarker = {lat: rLat, lng: rLng};
+          var marker = new google.maps.Marker({
+            position: newMarker, 
+            map: map
+          }); console.log("adding to array");
+          markers.push(marker);
+      } 
+
+      // function createInfoWindow(rName, rVicinity){
+        
+      //   var content = {name:rName, location: rVicinity};
+      //   var infowindow= new google.maps.InfoWindow({
+      //     content: content
+
+      //   });
+      // }
+      
     
       function showResultsOnMap(results, status){
-          console.log("showing results", results)
-          //clearMap();
-          if(status == google.maps.places.PlacesServiceStatus.OK){
-              clearMap();
-              var i;
-              for(i = 0; i <results.length; i++){
-                var rLat = results[i].geometry.location.lat;
-                var rLng = results[i].geometry.location.lng;
-                var positionX = {lat: rLat, lng: rLng};
-                console.log("position is", positionX);
-                // createMarker(results);
-                }
-            }else{
-              console.log("something went wrong!", status)
+        console.log("showing results", results)
+        //clearMap();
+        if(status == google.maps.places.PlacesServiceStatus.OK){
+          clearMap();
+          //clearResults();
+          var i;
+          for(i = 0; i <results.length; i++){
+            var rLat = results[i].geometry.location.lat();
+            var rLng = results[i].geometry.location.lng();
+            var rName = results[i].name;
+            var rVicinity= results[i].vicinity;
+            var newMarker = {lat: rLat, lng: rLng};
+            console.log("position is", rLat, rLng);
+            createMarker(rLat,rLng);
+            createInfoWindow(rName,rVicinity);
           }
+        }else{console.log("something went wrong!", status)}
       }
 
       function hookUpPlacesApi(){
@@ -118,7 +143,7 @@
         });
         
         //marker uses parameters and must include map: map to load the mapAPI 
-        var marker = new google.maps.Marker({position: circus, map: map});
+        //var marker = new google.maps.Marker({position: circus, map: map});
 
         function showContentInWindow(newContent){
                 //variable is placed in new content window
@@ -130,6 +155,7 @@
         marker.addListener("click", function (){
           //content is passed through the function 
           showContentInWindow("this is new content");
+          console.log("clicky");
         });
 
 

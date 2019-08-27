@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      .wrapper{
+            display: flex;
+        }
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        width: 50%;
+      }
+
+      #map, .wrapper {
+        height: 100%;
+      }
+      #results{
+          width:50%;
+          padding: 2rem;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+        <div class="wrapper">
+
+                <div id="map"></div>
+    
+                <div id="results">
+    
+                    <form>
+                        <input type="text" name="query"/>
+                        <input type="submit" value="Search"/>
+                    </form>
+                    <ul>
+    
+                    </ul>
+              </div>
+    
+            </div>
+    <script>
+      var map;
+      var service;
+
+      function clearMap(){   
+          //3. clear any previous markers from the map
+          console.log("map cleared!...loading...")
+          //marker.setMap(null)
+      }
+
+      function createMarker(returns){ 
+        console.log("creating marker")
+          //1.plot each result on the map with the name and location in the infowindow
+          //2. show the result in the UL on the right screen
+        //marker uses parameters and must include map: map to load the mapAPI 
+       
+       // var marker = new google.maps.Marker({position: positionX, map: map});
+       } 
+    
+      function showResultsOnMap(results, status){
+          console.log("showing results", results)
+          //clearMap();
+          if(status == google.maps.places.PlacesServiceStatus.OK){
+              clearMap();
+              var i;
+              for(i = 0; i <results.length; i++){
+                var rLat = results[i].geometry.location.lat;
+                var rLng = results[i].geometry.location.lng;
+                var positionX = {lat: rLat, lng: rLng};
+                console.log("position is", positionX);
+                // createMarker(results);
+                }
+            }else{
+              console.log("something went wrong!", status)
+          }
+      }
+
+      function hookUpPlacesApi(){
+        var resultsEl  = document.getElementById("results");
+        var queryEl = resultsEl.querySelector('input[type="text"]');
+        var buttonEl = resultsEl.querySelector('input[type="submit"]');
+
+        buttonEl.addEventListener('click', function(evt){
+          evt.preventDefault();
+          var query = queryEl.value
+          console.log("starting search for...", query);
+          service.nearbySearch({
+            bounds: map.getBounds(),
+            keyword: query,
+          }, showResultsOnMap)
+
+        });     
+      }
+      hookUpPlacesApi();
+
+      function initMap() {
+
+
+        var circus = {lat:33.813245, lng: -84.362171}
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: circus,
+          zoom: 12
+        });
+       //makes places API a variable 
+        service = new google.maps.places.PlacesService(map);
+        var content ="something about this marker"
+        var infowindow= new google.maps.InfoWindow({
+          content: content
+
+        });
+        
+        //marker uses parameters and must include map: map to load the mapAPI 
+        var marker = new google.maps.Marker({position: circus, map: map});
+
+        function showContentInWindow(newContent){
+                //variable is placed in new content window
+            infowindow.setContent(newContent)
+                //content is set above the indicated marker
+            infowindow.open(map, marker);
+        }
+        
+        marker.addListener("click", function (){
+          //content is passed through the function 
+          showContentInWindow("this is new content");
+        });
+
+
+    
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8YgsGRhmpj0vSQlLl5EViZa3MGbrjr8&callback=initMap&libraries=places"
+    async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+  </body>
+</html>

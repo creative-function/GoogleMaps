@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+    
+        .wrapper{
+            display: flex;
+        }
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        width: 50%;
+      }
+
+      #map, .wrapper {
+        height: 100%;
+      }
+      #results{
+          width:50%;
+          padding: 2rem;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+        <div class="wrapper">
+            <!-- wraps the map in a div, gives it 50% and user window other 50% -->
+
+            <div id="map"></div>
+
+            <div id="results">
+
+                <form>
+                    <input type="text" name="query"/>
+                    <input type= "submit" value="Search"/>
+                </form>
+                <ul>
+
+                </ul>
+          </div>
+
+        </div>
+    <script>
+      var map;
+      function hookUpPlacesApi(){
+          var resultsEl  = document.getElementById("results");
+
+          var queryEl = resultsEl.querySelector('input[type="text"]');
+          var buttonEl = resultsEl.querySelector('input[type="tsubmit"]');
+
+          buttonEl.addEventListener('click', function(evt){
+              evt.preventDefault();
+
+              var query = queryEl.value
+              console.log("starting search for...", query)
+          });     
+        }
+
+      function initMap() {
+        console.log("step 2")
+        map = new google.maps.Map(document.getElementById('map'), {
+            // google params: my params
+          center: {lat: 33.813245, lng: -84.362171},
+            //params can be stored in variables 
+            //i.e:   //var circus = {lat: 33.813245, lng: -84.362171},
+            //center: circus,
+          zoom: 12
+        });
+
+        // create a text bubble on a marker.
+            //define the content 
+        var content ="something about this marker"
+                    //string reads html tags for styling: ALTERNATE WAY:
+                    // var content = doucmnet.getElbyID("#MyInfo"); 
+                    // <div id="MyInfo" style="display:hdden;">
+                    //  <h1>HOWDY</h1>
+                    //  <p>something about THIS marker too</p>
+                    // </div>
+        // this function creates the bubble
+        var infowindow= new google.maps.InfoWindow({
+            //google: me // Set content 
+            content: content
+        });
+
+
+       
+
+        
+        //marker uses paramesers and mist include map: map to load the mapAPI 
+        var marker = new google.maps.Marker({position: circus, map: map})
+
+        //remove a marker:
+            //marker.setMap(null)
+
+        //add listener to marker*
+        //*slightly different than addEventListener
+        marker.addListener("click", function (){
+            //when clicked, infowindow function will open on map/specified marker 
+            infowindow.open(map, marker);
+            //overwrite the innerText of your infoWindow
+            // infowindow.setContent('more content')
+        })
+
+        // DRY WAY TO REPLACE INFOWINDOW CONTENT
+        // function showContentInWindow(newContent){
+        //         //variable is placed in new content window
+        //     infowindow.setContent(newContent)
+        //         //content is set above the indicated marker
+        //     infowindow.open(map, marker)
+        // }
+        // marker.addListener("click", function (){
+        //     //content is passed through the function 
+        //     showContentInWindow("this is new content")
+        // })
+        
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8YgsGRhmpj0vSQlLl5EViZa3MGbrjr8&callback=initMap"
+    async defer></script>
+  </body>
+</html>
+
+<!-- //first script
+<script>
+        var map;
+        console.log("step 1")
+        function initMap() {
+          console.log("step 2")
+          map = new google.maps.Map(document.getElementById('map'), {
+              // google params: my params
+            center: {lat: 33.813245, lng: -84.362171},
+              //params can be stored in variables 
+              //i.e:   //var circus = {lat: 33.813245, lng: -84.362171},
+              //center: circus,
+            zoom: 12
+          });
+  
+          // create a text bubble on a marker.
+              //define the content 
+          var content ="something about this marker"
+                      //string reads html tags for styling: ALTERNATE WAY:
+                      // var content = doucmnet.getElbyID("#MyInfo"); 
+                      // <div id="MyInfo" style="display:hdden;">
+                      //  <h1>HOWDY</h1>
+                      //  <p>something about THIS marker too</p>
+                      // </div>
+          // this function creates the bubble
+          var infowindow= new google.maps.InfoWindow({
+              //google: me // Set content 
+              content: content
+          });
+  
+  
+         
+  
+          
+          //marker uses paramesers and mist include map: map to load the mapAPI 
+          var marker = new google.maps.Marker({position: circus, map: map})
+  
+          //remove a marker:
+              //marker.setMap(null)
+  
+          //add listener to marker*
+          //*slightly different than addEventListener
+          marker.addListener("click", function (){
+              //when clicked, infowindow function will open on map/specified marker 
+              infowindow.open(map, marker);
+              //overwrite the innerText of your infoWindow
+              // infowindow.setContent('more content')
+          })
+  
+          // DRY WAY TO REPLACE INFOWINDOW CONTENT
+          // function showContentInWindow(newContent){
+          //         //variable is placed in new content window
+          //     infowindow.setContent(newContent)
+          //         //content is set above the indicated marker
+          //     infowindow.open(map, marker)
+          // }
+          // marker.addListener("click", function (){
+          //     //content is passed through the function 
+          //     showContentInWindow("this is new content")
+          // })
+          
+        }
+      </script> -->

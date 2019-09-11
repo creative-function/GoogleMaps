@@ -32,7 +32,7 @@
   <body>
     <div class="wrapper">
       <div id="map"></div>
-      <div id="results">
+      <div id="result-window">
         <form>
           <input type="text" name="query"/>
           <input type="submit" value="Search"/>
@@ -40,6 +40,64 @@
         <ul class="result-list">
 
         </ul>
+
+        <div>
+          <form name="timeline">
+            Twitter handle: <input name="screen_name" type="text"/>
+            <button name="get_timeline" type="submit">Get Timeline</button>
+            <div class="results">
+              <ul>
+      
+              </ul>
+            </div>
+          </form>
+        </div>
+      
+        <hr/>
+      
+        <div>
+          <form name="search">
+            Query: <input name="qkSrchInputField" type="text" />
+            <button name="qk_srch" type="submit">Quick Search</button>
+            <div class="results">
+              <ul>
+              </ul>
+            </div>
+          </form>
+        </div>
+      
+        <hr/>
+      
+        <div>
+          <form name="search">
+            Query: <input name="cstmSrchInputField" type="text" />
+            Limit: <input name="count" type="number" />
+            Result Type:
+            <select name="result_type">
+              <option value="mixed">Default</option>
+              <option value="popular">Most popular</option>
+              <option value="recent">Most recent</option>
+            </select>
+            <button name="cstm_srch" type="submit">Custom Search</button>
+            <div class="results">
+              <ul>
+              </ul>
+            </div>
+          </form>
+          <hr>
+          <div class="flex-title">
+            <h1 class="result-message"></h1>
+            <h2 class="search-term"></h2>
+          </div>
+          <section  id="search-results">
+          </section>
+        </div>
+      
+        <hr/>
+
+
+
+
       </div>
     </div>
     <script>
@@ -115,7 +173,7 @@
       }
 
       function hookUpPlacesApi(){
-        var resultsEl  = document.getElementById("results");
+        var resultsEl  = document.getElementById("result-window");
         var queryEl = resultsEl.querySelector('input[type="text"]');
         var buttonEl = resultsEl.querySelector('input[type="submit"]');
 
